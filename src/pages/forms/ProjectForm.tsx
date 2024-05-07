@@ -9,7 +9,80 @@ import { DiVim } from "react-icons/di";
 import { IoTrashBinSharp } from "react-icons/io5";
 import { useAccountStore } from "../../store";
 
-const ProjectForm: React.FC = ({
+
+enum VisibilityOptions {
+  PUBLIC = "Public",
+  PRIVATE = "Private",
+}
+
+interface ITag {
+  id: number;
+  name: string;
+}
+
+interface IAttachment{
+  id:number;
+  url:string;
+  created:Date;
+  task:null;
+  project:number;
+  comment:null;
+  filename_to_display:string;
+}
+
+interface IProfile{
+  user:number;
+  bio?:string;
+  url?:string;
+  birthdate:Date|null;
+  gender?:string;
+}
+
+interface IUser{
+  id:number;
+  first_name:string;
+  last_name:string;
+  email:string;
+  profile:IProfile;
+  theme:string;
+  role:string;
+}
+
+
+interface IProject{
+  id:number;
+  owner:IUser;
+  assignees:IUser[];
+  attachments:IAttachment[];
+  tags:ITag[];
+  createdBy:{
+    id:number;
+    first_name:string;
+    last_name:string;
+    email:string;
+    photo:null|string;
+  };
+  updated_by:null;
+  title:string;
+  description:string;
+  deadline:string;
+  visibilityOptions: { [key in VisibilityOptions]: string };
+  status:string;
+  archive:boolean;
+  created:Date;
+  updated:Date;
+}
+
+interface IProjectFormProps{
+  project?:IProject;
+  isProjectLoading:boolean;
+  visibilityOptions: { [key in VisibilityOptions]: string };
+  tags:ITag[];
+  users:IUser[];
+  handleSave:()=>void;
+}
+
+const ProjectForm: React.FC<IProjectFormProps> = ({
   project,
   isProjectLoading,
   visibilityOptions,
@@ -361,7 +434,15 @@ const ProjectForm: React.FC = ({
                     id={user?.id}
                     defaultChecked={isChecked}
                   />
-                  {user?.first_name}
+              <div className="flex w-full justify-between xl:flex-col xl:w-fit mx-2 ">
+           <div className="flex space-x-1 ">
+           <span>{user?.first_name}</span>
+                <span>{user?.last_name}</span>
+           </div>
+           
+            <span className="text-xs text-gray-500">{user?.role}</span>
+          
+              </div>
                 </label>
               );
             })}

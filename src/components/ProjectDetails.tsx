@@ -13,7 +13,7 @@ import { useAccountStore } from "../store";
 
 const ProjectDetails: React.FC = () => {
   const userAccount = useAccountStore((state) => state.account);
-  const { role } = userAccount;
+
   const { id } = useParams();
   const [breadCrumbsData, setBreadCrumbsData] = useState([]);
 
@@ -34,7 +34,7 @@ const ProjectDetails: React.FC = () => {
       <div className=" flex gap-12  h-auto  flex-col-reverse w-[100%] md:w-[90%] py-10 xl:flex-row mx-auto ">
         {/* LEFT */}
         <div className="flex flex-col  gap-5 flex-grow px-14 py-10 flex-1 h-auto shadow-[rgba(7,_65,_210,_0.1)_0px_9px_30px] ">
-          {role === "admin" && (
+          {userAccount?.role === "admin" && (
             <div className="flex justify-end">
               <Link to={`/project/edit/${id}`}>
                 <button className="bg-blue-400 text-white py-1 px-3.5 font-semibold rounded">
