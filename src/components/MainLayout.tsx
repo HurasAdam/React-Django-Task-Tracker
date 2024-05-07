@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { Header } from "./Header";
 import LeftSideBar from "./LeftSideBar";
@@ -6,6 +6,8 @@ import toast from "react-hot-toast";
 import { validateSession } from "../services/userApi";
 import { useQuery } from "@tanstack/react-query";
 import { useAccountStore } from "../store";
+import { useWindowSize } from "@uidotdev/usehooks";
+import MobileLeftSidebar from "./MobileLeftSidebar";
 
 const RootLayout: React.FC = () => {
   const setAccount = useAccountStore((state) => state.setAccount);
@@ -36,26 +38,31 @@ const RootLayout: React.FC = () => {
     queryKey: ["session"],
     retry: false,
   });
+  const windowSize = useWindowSize();
+  const [isMenuActive, setIsMenuActive] = useState(true);
+  const [isMobileMenuActive, setIsMobileMenuActive] = useState<boolean>(false);
 
-  const [isHidden, setIsHidden] = useState<boolean>(false);
-  const [isMobileMenuHidden, setIsMobileMenuHidden] = useState<boolean>(false);
+  useEffect(() => {
+    if (windowSize.width < 1024) {
+      setIsMenuActive(false);
+    } else {
+      setIsMenuActive(true);
+      setIsMobileMenuActive(false);
+    }
+  }, [windowSize.width]);
 
-  const handleMenuHide = (): void => {
-    setIsHidden(!isHidden);
-  };
-
-  const handleMobileMenu = (): void => {
-    setIsMobileMenuHidden(!isMobileMenuHidden);
-  };
+const toggleMobileMenuHandler=():void=>{
+  setIsMobileMenuActive((state)=>!state);
+}
 
   return (
     <div className="w-full flex flex-col  h-screen">
       <Header
-        handleMenuHide={handleMenuHide}
-        handleMobileMenu={handleMobileMenu}
+     
       />
       <main className=" flex">
-        <LeftSideBar />
+        <LeftSideBar isMenuActive={isMenuActive} toggleMobileMenuHandler={toggleMobileMenuHandler} />
+    <MobileLeftSidebar isMobileMenuActive={isMobileMenuActive} toggleMobileMenuHandler={toggleMobileMenuHandler}/>
         <section className="flex flex-1 h-full overflow-scroll custom-scrollbar  ">
           <Outlet />
         </section>

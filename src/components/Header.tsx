@@ -44,13 +44,13 @@ export const Header: React.FC = () => {
       <div className=" flex gap-x-9 items-center">
         <ul className="flex gap-x-5 items-center font-semibold">
           <li>
-            <IoIosNotifications className="w-7 h-auto text-slate-500 cursor-pointer hover:opacity-70  transition-all" />
+            <IoIosNotifications className="w-6 h-auto text-slate-500 cursor-pointer hover:opacity-70  transition-all" />
           </li>
           <li>
-            <FaMessage className="w-6 h-auto text-slate-500 cursor-pointer hover:opacity-70 transition-all" />
+            <FaMessage className="w-5 h-auto text-slate-500 cursor-pointer hover:opacity-70 transition-all" />
           </li>
           <li>
-            <FaUserCircle className="w-8 h-auto text-slate-500 cursor-pointer hover:opacity-70  transition-all " />
+            <FaUserCircle className="w-[25px] h-auto text-slate-500 cursor-pointer hover:opacity-70  transition-all " />
           </li>
         </ul>
         <button

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { RxHamburgerMenu } from "react-icons/rx";
 import { sidebarLinks } from "../constants";
 import {
   Link,
@@ -8,29 +9,21 @@ import {
   useLocation,
   NavLink,
 } from "react-router-dom";
-import { useWindowSize } from "@uidotdev/usehooks";
 
-const LeftSideBar: React.FC = () => {
+
+const LeftSideBar: React.FC = ({isMenuActive,toggleMobileMenuHandler}) => {
   const { pathname } = useLocation();
 
-  const [isMenuActive, setIsMenuActive] = useState(true);
-  const windowSize = useWindowSize();
 
-  useEffect(() => {
-    if (windowSize.width < 1024) {
-      setIsMenuActive(false);
-    } else {
-      setIsMenuActive(true);
-    }
-  }, [windowSize.width]);
 
-  if (isMenuActive) {
+if(isMenuActive){
     return (
       <nav
         className={
           "leftsidebar-hidden leftsidebar flex flex-col justify-between "
         }
       >
+
         <ul className="flex flex-col  ">
           {sidebarLinks.map(({ label, route, imgURL }) => {
             const isActive = pathname === route;
@@ -50,7 +43,18 @@ const LeftSideBar: React.FC = () => {
         </ul>
       </nav>
     );
+  
   }
+  if(!isMenuActive){
+    return(
+      <div className="absolute top-[17px] left-5">
+        <button onClick={toggleMobileMenuHandler}>
+          <RxHamburgerMenu className="w-6 h-auto text-slate-800"/>
+        </button>
+      </div>
+    )
+  }
+
 };
 
 export default LeftSideBar;
