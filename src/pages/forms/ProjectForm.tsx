@@ -123,7 +123,7 @@ const ProjectForm: React.FC<IProjectFormProps> = ({
 
   const fileInputValue = watch("attachments")[0];
 
-  console.log(fileInputValue);
+
 
   const onSubmit = handleSubmit((data) => {
     const {

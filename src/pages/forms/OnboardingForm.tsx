@@ -147,8 +147,8 @@ const OnboardingForm: React.FC = ({ onSave }) => {
         <div className=" grid-row-5 gap-3 md:grid-cols-2 md:gap-3 lg:grid">
           {themeTypes.map(({ label, value }, index) => {
             const isChecked = watch("theme") === value;
-            console.log("isChecked");
-            console.log(isChecked);
+            
+         
             return (
               <label
                 key={index}

@@ -1,5 +1,6 @@
 import axios from "axios";
 import clientApi from "../axios";
+import * as types from "../types/index";
 
 export const getAllTickets = async ({ limit = 10, title = "", offset = 0 }) => {
   try {
@@ -93,7 +94,7 @@ export const createNewTicket = async ({ csrfToken, formData }) => {
   }
 };
 
-export const getTicketDetails = async ({ id }) => {
+export const getTicketDetails = async ({ id }):Promise<types.ITicketRespone> => {
   try {
     const config = {
       withCredentials: true,
@@ -117,7 +118,7 @@ export const getTicketDetails = async ({ id }) => {
   }
 };
 
-export const getCommentsByTicketId = async ({ id }) => {
+export const getCommentsByTicketId = async ({ id }:{id:string}):Promise<types.ICommentsListResponse> => {
   try {
     const config = {
       withCredentials: true,
@@ -162,7 +163,7 @@ export const addComment = async ({ csrfToken, formData }) => {
   }
 };
 
-export const updateComment = async ({ csrfToken, commentId, formData }) => {
+export const updateComment = async ({ csrfToken, commentId, formData }:{csrfToken:string,commentId:number,formData:types.ICommentFormData}) => {
   try {
     const response = await clientApi({ csrfToken }).put(
       `http://127.0.0.1:8000/task-tracker/v1/task/comments/${commentId}/`,
@@ -185,7 +186,7 @@ export const deleteComment = async ({
   csrfToken,
   commentId,
 }: {
-  commentId: string;
+  commentId: number;
   csrfToken: string;
 }) => {
   try {

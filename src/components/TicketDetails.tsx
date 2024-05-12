@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 
 import { Link, useParams } from "react-router-dom";
+import * as types from "../types/index";
 
 import {
   addComment,
@@ -11,23 +12,27 @@ import {
 } from "../services/ticketsApi";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { images } from "../constants";
-import { FaFileArrowUp, FaPeopleGroup } from "react-icons/fa6";
+import { FaFileArrowUp } from "react-icons/fa6";
 import { IoMdDownload } from "react-icons/io";
-import { MdOutlinePending, MdPublic } from "react-icons/md";
 import CommentContainer from "./CommentContainer";
 import CommentForm from "../pages/forms/CommentForm";
 import toast from "react-hot-toast";
 import { useAccountStore } from "../store";
 
-const TicketDetails = () => {
+const TicketDetails:React.FC = () => {
   const { id } = useParams();
   const queryClient = useQueryClient();
   const [breadCrumbsData, setBreadCrumbsData] = useState([]);
-  const [affectedComment, setAffectedComment] = useState(null);
+  const [affectedComment, setAffectedComment] = useState<types.IAffectedComment|null>(null);
   const userAccount = useAccountStore((state) => state.account);
 
   const { data: ticket } = useQuery({
-    queryFn: () => getTicketDetails({ id }),
+    queryFn: () => {
+      if(id){
+       return getTicketDetails({ id })
+      }
+    
+    },
     queryKey: ["project", id],
     onSuccess: () => {
       setBreadCrumbsData([
@@ -43,6 +48,7 @@ const TicketDetails = () => {
     queryKey: ["comments", id],
   });
 
+
   const { mutate } = useMutation({
     mutationFn: ({ csrfToken, formData }) => {
       return addComment({ csrfToken, formData });
@@ -53,7 +59,7 @@ const TicketDetails = () => {
     },
   });
   const { mutate: updateMutate } = useMutation({
-    mutationFn: ({ csrfToken, commentId, formData }) => {
+    mutationFn: ({ csrfToken, commentId, formData }:{csrfToken:string,commentId:number,formData:types.ICommentFormData}) => {
       return updateComment({ csrfToken, commentId, formData });
     },
     onSuccess: () => {
@@ -64,7 +70,7 @@ const TicketDetails = () => {
   });
 
   const { mutate: deleteMutate } = useMutation({
-    mutationFn: ({ csrfToken, commentId }) => {
+    mutationFn: ({ csrfToken, commentId }:{csrfToken:string,commentId:number}) => {
       return deleteComment({ csrfToken, commentId });
     },
     onSuccess: () => {
@@ -78,7 +84,7 @@ const TicketDetails = () => {
     mutate({ csrfToken, formData });
   };
 
-  const handleUpdateComment = ({ csrfToken, commentId, formData }) => {
+  const handleUpdateComment = ({ csrfToken, commentId, formData }:{csrfToken:string,commentId:number, formData:types.ICommentFormData}) => {
     updateMutate({ csrfToken, commentId, formData });
   };
   const handleDeleteComment = ({ csrfToken, commentId }) => {
@@ -117,11 +123,15 @@ const TicketDetails = () => {
                 Attachments
               </h3>
               <div>
-                {ticket?.attachments.map((attachment) => {
+                {ticket?.attachments.map((attachment,index) => {
                   return (
-                    <div className="flex items-center justify-between  px-2 border-b py-3 ">
+                    <div 
+                    key={index}
+                    className="flex items-center justify-between  px-2 border-b py-3 ">
                       <FaFileArrowUp className="w-5 h-auto" />
-                      <span>{attachment?.filename_to_display}</span>
+                    
+                      <span>{attachment?.filename_to_display}.{attachment?.mimeType}</span>
+                      <span>{attachment.size_in_mb} Mb</span>
                       <a href={attachment?.url} download>
                         <IoMdDownload className="w-6 h-auto hover:text-blue-300 transition-all" />
                       </a>
@@ -136,14 +146,14 @@ const TicketDetails = () => {
             setAffectedComment={setAffectedComment}
             handleUpdateComment={handleUpdateComment}
             handleDeleteComment={handleDeleteComment}
-            comments={comments}
+            comments={comments?.results}
           />
-          <CommentForm
+{    ticket&&     <CommentForm
             projectId={ticket?.project}
             ticketId={ticket?.id}
             handleSave={handleSave}
             btnLabel={"Submit"}
-          />
+          />}
         </div>
 
         {/* LEFT */}

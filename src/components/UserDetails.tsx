@@ -12,7 +12,7 @@ const UserDetails: React.FC = () => {
     },
     queryKey: ["user", id],
   });
-  console.log(user);
+ 
   return (
     <div className=" flex flex-col  h-screen w-full  flex-1  custom-scrollbar overflow-scroll  p-14   ">
       <div className=" px-14 py-8 flex flex-col sm:flex-row justify-center gap-5 sm:justify-between ">
