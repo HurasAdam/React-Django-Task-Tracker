@@ -17,7 +17,7 @@ const Comment = ({
   const [isUserLoggined, setIsUserLoggedIn] = useState(true);
   const csrfToken = useAccountStore((state) => state.csrfToken);
 
-  console.log(comment);
+
 
   const isEditing =
     affectedComment &&

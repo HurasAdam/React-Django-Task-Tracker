@@ -44,7 +44,7 @@ const Users: React.FC = () => {
     setCurrentPage(1);
     refetch();
   };
-  console.log(users?.results?.map((user) => user?.first_name));
+
   return (
     <div className=" flex flex-col pb-20 px-10  h-screen w-full  flex-1  custom-scrollbar overflow-scroll  ">
       <div className="px-10 flex flex-col gap-4  justify-between  lg:pr-6 2xl:pr-12  ">

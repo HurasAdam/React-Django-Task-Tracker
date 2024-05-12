@@ -1,8 +1,22 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useAccountStore } from "../../store";
+import * as types from "../../types/index";
 
-const CommentForm = ({
+interface IProps{
+  comment?:types.IComment;
+  ticketId:number;
+  projectId:number;
+  handleSave:({ csrfToken, formData }:{csrfToken:string,formData:types.ICommentFormData})=>void;
+  btnLabel:string;
+  handleUpdateComment?:({csrfToken, commentId, formData}:{csrfToken:string,commentId:number,formData:types.ICommentFormData})=>void;
+  formCancelHandler?: () => void; 
+  loading?:boolean;
+}
+
+
+
+const CommentForm:React.FC<IProps> = ({
   comment,
   ticketId,
   projectId,
@@ -10,16 +24,17 @@ const CommentForm = ({
   btnLabel,
   handleUpdateComment,
   formCancelHandler = null,
-
   loading = false,
 }) => {
-  console.log(ticketId);
+  
   const csrfToken = useAccountStore((state) => state.csrfToken);
   const { register, handleSubmit, reset } = useForm({
     defaultValues: {
       text: comment ? comment?.text : "",
     },
   });
+
+
 
   const onSubmit = handleSubmit((data) => {
     const { text } = data;

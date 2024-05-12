@@ -23,7 +23,7 @@ const TicketForm: React.FC = ({
   const [isDateSelected, setIsDateSelected] = useState(false);
   const csrfToken = useAccountStore((state) => state.csrfToken);
 
-  console.log(ticket?.id);
+ 
 
   const {
     register,
