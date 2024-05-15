@@ -112,7 +112,7 @@ const ProjectDetails: React.FC = () => {
                     <span className="font-semibold text-sm text-gray-500">
                       Project Leader
                     </span>
-                    <span className="font-semibold">{`${project?.created_by?.first_name} ${project?.created_by?.last_name}`}</span>
+                    <span className="font-semibold">{`${project?.owner?.first_name} ${project?.owner?.last_name}`}</span>
                   </div>
                   <img
                     src={project?.owner?.profile?.photo || images.ProfileImage}

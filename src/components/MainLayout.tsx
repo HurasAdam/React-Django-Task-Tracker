@@ -11,12 +11,15 @@ import MobileLeftSidebar from "./MobileLeftSidebar";
 
 const RootLayout: React.FC = () => {
   const setAccount = useAccountStore((state) => state.setAccount);
-  const setCsrfToken = useAccountStore((state) => state.setCsrfToken);
+const setCsrfToken=useAccountStore((state)=>state.setCsrfToken);
+  const account = useAccountStore((state)=>state.account);
   const navigate = useNavigate();
+
+  console.log(account&& account?.is_configured)
 
   const isConfigured = true;
 
-  if (!isConfigured) {
+  if (account&& !account?.is_configured) {
     navigate("/onboarding");
   }
 

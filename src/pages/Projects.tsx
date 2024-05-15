@@ -1,13 +1,20 @@
 import React, { useState } from "react";
 import MainLayout from "../components/MainLayout";
 import { useQuery } from "@tanstack/react-query";
-import { getAllProjects } from "../services/projectsApi";
+import { getAllProjects, getTags } from "../services/projectsApi";
 import ProjectCard from "../components/ProjectCard";
 import { IoClose } from "react-icons/io5";
 import ProjectsWrapper from "../components/ProjectsWrapper";
 import Pagination from "../components/Pagination";
 import { Link } from "react-router-dom";
 import { useAccountStore } from "../store";
+import ProjectTypesFilter from "../components/ProjectTypesFilter";
+import DeadlineFilter from "../components/DeadlineFilter";
+import StarRatingFilter from "../components/StarRatingFilter";
+import ProjectCard2 from "../components/ProjectCard2";
+import ProjectTitleFilter from "../components/ProjectTitleFilter";
+import ProjectOrderingFilter from "../components/ProjectOrderingFilter";
+
 
 const Projects: React.FC = () => {
   const userAccount = useAccountStore((state) => state.account);
@@ -16,109 +23,146 @@ const Projects: React.FC = () => {
 
   const [searchKeyword, setSearchKeyword] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [paginationLimit, setPaginationLimit] = useState(12);
+  const [limit, setLimit] = useState(2);
+  const [selectedStars, setSelectedStars] = useState<string[]>([]);
+  const [ordering,setOrdering]=useState<string>("");
+
+
+  const searchParams= {
+paramsFilter:{
+  limit:limit.toString(),
+ ordering:ordering.toString(),
+offset:(currentPage-1)*limit
+},
+keywordFilter:{ title:searchKeyword}
+  };
+
 
   const {
     data: projects,
-    isLoading,
+    isLoading:isProjectListLoading,
+    isFetching:isProjectListFetching,
     isError,
     refetch,
   } = useQuery({
     queryFn: () => {
-      return getAllProjects({
-        limit: paginationLimit,
-        title: searchKeyword,
-        offset: currentPage,
-      });
+      return getAllProjects(searchParams);
     },
-    queryKey: ["projects", currentPage, paginationLimit],
+    queryKey: ["projects", searchParams.paramsFilter],
     refetchOnWindowFocus: false,
   });
 
-  console.log(projects?.count);
+  const {
+    data: tags,
+  } = useQuery({
+    queryFn: () => {
+      return getTags()
+    },
+    queryKey: ["tags", limit],
+    refetchOnWindowFocus: false,
+  });
+
+
+
   const searchKeywordHandler = (
     e: React.ChangeEvent<HTMLInputElement>
   ): void => {
     const { value } = e.target;
     setSearchKeyword(value);
   };
+const handleSearchOrdering=(e:React.ChangeEvent<HTMLInputElement>):void=>{
+  const { value } = e.target;
+  console.log(value)
+setOrdering(value);
+}
 
   const submitSearchKeywordHandler = (
     e: React.ChangeEvent<HTMLInputElement>
   ): void => {
     e.preventDefault();
-    setCurrentPage(0);
+    setCurrentPage(1);
     refetch();
   };
 
   const resetSearchFilterHandler = (): void => {
+ 
     setSearchKeyword("");
     setCurrentPage(1);
+refetch();
   };
 
-  return (
-    <div className=" flex flex-col pb-20 px-12  h-screen w-full  flex-1  custom-scrollbar overflow-scroll  ">
-      <div className="flex flex-col gap-4  justify-between  lg:pr-6 2xl:pr-12  ">
-        <h1 className="h1-bold text-center sm:text-left sm:h2-bold mt-4">
-          Projects
-        </h1>
 
-        <div className="flex flex-col sm:flex-row justify-between gap-10 w-full  mb-6 ">
-          {userAccount && userAccount.role === "admin" && (
+  return (
+<div className=" mt-5 flex flex-col pb-20 w-full pl-12 h-screen  relative custom-scrollbar overflow-scroll  ">
+
+<div className="grid grid-cols-1 lg:grid-cols-[250px_1fr] gap-5 max-w-[1400px] ">
+  
+      <div className="  flex flex-col gap-y-3 lg:sticky top-4 h-screen ">
+      {userAccount && userAccount.role === "admin" && (
             <Link
               to={"/project/new"}
-              className="border-2 px-2 py-2.5 text-center bg-purple-500 text-white font-semibold rounded-lg hover:opacity-85"
+              className="px-2 py-2.5 text-center bg-blue-500 text-white font-semibold rounded-lg hover:opacity-85"
             >
               + Add new project
             </Link>
           )}
-          <div className="flex flex-col sm:flex-row gap-2 relative">
-            <button
-              disabled={searchKeyword.length < 1}
-              onClick={resetSearchFilterHandler}
-              className="absolute top-2 right-[27%] "
-            >
-              <IoClose
-                className="text-slate-300 cursor-pointer 
-            rounded-full hover:bg-slate-100 hover:text-slate-500  w-7 h-auto transition-all duration-100 "
-              />
-            </button>
-            <input
-              onChange={searchKeywordHandler}
-              className="placeholder:px-2 p-2 w-full rounded-lg mx-auto md:mx-0 "
-              placeholder="project title..."
-              type="text"
-              value={searchKeyword}
-            />
-            <button
-              disabled={searchKeyword.length < 1}
-              onClick={submitSearchKeywordHandler}
-              className="flex-shrink-0 px-4 py-2 text-base font-semibold text-white bg-purple-600 
-              rounded-lg shadow-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 
-              focus:ring-offset-2 focus:ring-offset-purple-200 disabled:opacity-70"
-              type="submit"
-            >
-              Filter
-            </button>
-          </div>
+     
+     <div className="rounded-lg border border-slate-300 p-5   overflow-x-hidden custom-scrollbar overflow-y-auto">
+       
+        <div className="space-y-5">
+          <h3 className="text-lg font-semibold border-b border-slate-300 pb-5">
+            Filter by:
+          </h3>
+      <ProjectTitleFilter 
+      searchKeyword={searchKeyword}
+      isFetching={isProjectListFetching}
+      searchKeywordHandler={searchKeywordHandler}  
+      submitSearchKeywordHandler={submitSearchKeywordHandler}
+      resetSearchFilterHandler={resetSearchFilterHandler}
+      />
+          <StarRatingFilter
+            // selectedStars={selectedStars}
+            // onChange={handleStarsChange}
+          />
+       {  tags&& tags.length>0 && <ProjectTypesFilter
+          tags={tags}
+            // selectedHotelTypes={selectedHotelTypes}
+            // onChange={handleHotelTypeChange}
+          />}
+          <DeadlineFilter
+            // selectedPrice={selectedPrice}
+            // onChange={(value?: number) => setSelectedPrice(value)}
+          />
+        </div>
         </div>
       </div>
-      <ProjectsWrapper
-        projects={projects}
-        isLoading={isLoading}
-        isError={isError}
-      />
+      <div className="flex flex-col gap-3">
+        <div className="flex justify-between items-center">
+          <span className="text-xl font-bold">
+            {projects?.count} Projects Found
+            {/* {search.destination ? ` in ${search.destination}` : ""} */}
+           
+          </span>
+   <ProjectOrderingFilter
+   ordering={ordering}
+   handleSearchOrdering={handleSearchOrdering}
+   />
+        </div>
+        {projects&&projects?.results.map((project) => (
+          <ProjectCard2 key={project?.id} project={project} />
+        ))}
 
-      {!isLoading && (
-        <Pagination
-          paginationLimit={paginationLimit}
-          setPaginationLimit={setPaginationLimit}
-          onPageChange={(page) => setCurrentPage(page)}
-          currentPage={currentPage}
-          totalPageCount={parseInt(projects?.count / paginationLimit)}
-        />
-      )}
+{!isProjectListLoading &&(
+              <Pagination
+                onPageChange={(page) => setCurrentPage(page)}
+                currentPage={currentPage}
+                totalPageCount={parseInt(projects?.count / limit)}
+              />
+            )}
+   
+      </div>
     </div>
+</div>
   );
 };
 

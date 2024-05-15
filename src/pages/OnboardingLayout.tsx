@@ -11,6 +11,7 @@ import { images } from "../constants";
 const OnboardingLayout: React.FC = () => {
   const setAccount = useAccountStore((state) => state.setAccount);
   const setCsrfToken = useAccountStore((state) => state.setCsrfToken);
+  const account = useAccountStore((state)=>state.account);
   const navigate = useNavigate();
 
   const {
@@ -31,6 +32,11 @@ const OnboardingLayout: React.FC = () => {
     queryKey: ["session"],
     retry: false,
   });
+
+
+  if(account && account?.is_configured){
+    navigate("/");
+  }
 
   return (
     <div className="w-full flex flex-col max-w-7xl mx-auto  h-screen overflow-scroll custom-scrollbar ">

@@ -134,7 +134,7 @@ const OnboardingForm: React.FC = ({ onSave }) => {
         )}
       </div>
       <div className="w-full flex flex-col">
-        <label htmlFor="">Prolfile photo</label>
+        <label htmlFor="">Profile photo</label>
         <input type="file" />
       </div>
       <div className="w-full flex flex-col">

@@ -1,18 +1,25 @@
 import axios from "axios";
 import clientApi from "../axios";
+import * as types from "../types/index"
 
-export const getAllProjects = async ({
-  limit = 12,
-  title = "",
-  offset = 0,
-}) => {
+export const getAllProjects = async (searchParams):Promise<types.IProjectsListResponse> => {
+
+const {paramsFilter,keywordFilter}=searchParams;
+
+const queryParams = new URLSearchParams();
+queryParams.append("ordering",paramsFilter.ordering||"");
+queryParams.append("limit",paramsFilter.limit);
+queryParams.append("title",keywordFilter.title);
+queryParams.append("offset",paramsFilter.offset>0?paramsFilter.offset:"");
+queryParams.append("ordering",paramsFilter.ordering);
+
   try {
     const config = {
       withCredentials: true,
     };
 
     const response = await axios.get(
-      `http://127.0.0.1:8000/task-tracker/v1/task/projects/?title=${title}&offset=${offset - 1 * limit}&limit=${limit}`,
+      `http://127.0.0.1:8000/task-tracker/v1/task/projects/?${queryParams}`,
       config
     );
 
