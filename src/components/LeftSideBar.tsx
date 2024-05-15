@@ -11,7 +11,12 @@ import {
 } from "react-router-dom";
 
 
-const LeftSideBar: React.FC = ({isMenuActive,toggleMobileMenuHandler}) => {
+interface IProps{
+  isMenuActive:boolean;
+  toggleMobileMenuHandler:()=>void;
+}
+
+const LeftSideBar: React.FC<IProps> = ({isMenuActive,toggleMobileMenuHandler}) => {
   const { pathname } = useLocation();
 
 

@@ -140,7 +140,7 @@ const Tickets: React.FC = () => {
                 </tr>
               </thead>
               <tbody>
-                {isLoading || isFetching ? (
+                {isLoading  ? (
                   <tr>
                     <td className="text-center py-10 w-full" colSpan={5}>
                       Loading...
