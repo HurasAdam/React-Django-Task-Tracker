@@ -11,7 +11,7 @@ const {offset,limit,ordering,title}=searchParams;
 const queryParams = new URLSearchParams();
 queryParams.append("ordering",ordering ? ordering :"");
 queryParams.append("limit",limit ? limit: "");
-queryParams.append("offset",offset && offset>0?offset:"");
+queryParams.append("offset",offset && offset>0?offset.toString():"");
 queryParams.append("title",title ? title :"");
 
   try {
