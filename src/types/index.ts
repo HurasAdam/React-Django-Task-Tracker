@@ -128,13 +128,14 @@ export interface ITag{
     name: string;
 }
 
-export interface IProjectsSearchParams{
-    params:{
-      limit:number;
-      ordering:string;
-      offset:number;
+
+ export interface IProjectsSearchParams{
+    paramsFilter?:{
+  ordering:string;
+  limit:string;
+  offset:string |number;
     },
-    title?:{
-        title?:string;
+    keywordFilter?:{
+  title:string
     }
   }

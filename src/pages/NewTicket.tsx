@@ -17,32 +17,37 @@ import {
 import { PiTicketFill } from "react-icons/pi";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import NewTicketSkeleton from "../components/NewTicketSkeleton";
 
 const NewTicket: React.FC = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { data: priorityOptions } = useQuery({
+  const { data: priorityOptions,isLoading:isPriorityOptionListLoading } = useQuery({
     queryFn: () => getTicketPriorityOptions(),
     queryKey: ["priorityOptions"],
   });
-  const { data: users } = useQuery({
-    queryFn: () => getUsers(),
+  const { data: users,isLoading:isUserListLoading } = useQuery({
+    queryFn: () => getUsers({limit:100}),
     queryKey: ["users"],
   });
 
+
+
+
   const {
     data: projects,
-    isLoading,
+    isLoading:isProjectListLoading,
     isError,
   } = useQuery({
     queryFn: () => {
-      return getAllProjects({ limit: 100 });
+      return getAllProjects();
     },
     queryKey: ["projects"],
     refetchOnWindowFocus: false,
+    
   });
 
-  const { data: typeOptions } = useQuery({
+  const { data: typeOptions,isLoading:isTypeOptionListLoading } = useQuery({
     queryFn: () => getTicketTypeOptions(),
     queryKey: ["typeOptions"],
   });
@@ -65,6 +70,18 @@ const NewTicket: React.FC = () => {
     mutate({ csrfToken, formData });
   };
 
+
+
+
+if(isPriorityOptionListLoading &&isProjectListLoading &&isUserListLoading &&isTypeOptionListLoading){
+ return(
+  <NewTicketSkeleton/>
+ )
+  }
+
+
+
+
   return (
     <div className="common-container h-fit ">
       <section className="container mx-auto max-w-5xl flex flex-col px-5 py-5 md:max-w-3xl lg:gap-x-5 lg:max-w-5xl xl:max-w-4xl">
@@ -72,7 +89,7 @@ const NewTicket: React.FC = () => {
           <PiTicketFill className="w-12 h-auto lg:w-9 lg:h-auto" />
           New Ticket
         </h1>
-        {projects && typeOptions && priorityOptions && (
+        {(
           <TicketForm
             projects={projects?.results}
             priorityOptions={priorityOptions}
@@ -81,6 +98,7 @@ const NewTicket: React.FC = () => {
             handleSave={handleSave}
           />
         )}
+
       </section>
     </div>
   );
