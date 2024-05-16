@@ -2,16 +2,24 @@ import axios from "axios";
 import clientApi from "../axios";
 import * as types from "../types/index"
 
-export const getAllProjects = async (searchParams):Promise<types.IProjectsListResponse> => {
 
-const {paramsFilter,keywordFilter}=searchParams;
+
+export const getAllProjects = async (searchParams?:types.IProjectsSearchParams):Promise<types.IProjectsListResponse> => {
+
+
 
 const queryParams = new URLSearchParams();
-queryParams.append("ordering",paramsFilter.ordering||"");
-queryParams.append("limit",paramsFilter.limit);
-queryParams.append("title",keywordFilter.title);
-queryParams.append("offset",paramsFilter.offset>0?paramsFilter.offset:"");
-queryParams.append("ordering",paramsFilter.ordering);
+
+if(searchParams?.paramsFilter){
+queryParams.append("ordering",searchParams.paramsFilter.ordering||"");
+queryParams.append("limit",searchParams.paramsFilter.limit);
+queryParams.append("offset",searchParams.paramsFilter.offset>0?searchParams.paramsFilter.offset:"");
+}
+if(searchParams?.keywordFilter){
+  queryParams.append("title",searchParams.keywordFilter.title||"");
+}
+
+
 
   try {
     const config = {
