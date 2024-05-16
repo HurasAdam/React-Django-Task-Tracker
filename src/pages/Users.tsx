@@ -5,13 +5,26 @@ import { images } from "../constants";
 import UserCard from "../components/UserCard";
 import { Link } from "react-router-dom";
 import Pagination from "../components/Pagination";
+import { useAccountStore } from "../store";
 
 const Users: React.FC = () => {
+  const userAccount = useAccountStore((state) => state.account);
+
   const [searchKeyword, setSearchKeyword] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [paginationLimit, setPaginationLimit] = useState(5);
-  const userString = localStorage.getItem("user");
-  const { role } = JSON.parse(userString as string);
+  const [limit,setLimit] = useState(5);
+
+
+  const searchParams= {
+    paramsFilter:{
+      limit:limit.toString(),
+    offset:(currentPage-1)*limit
+    },
+    keywordFilter:{ name:searchKeyword}
+      };
+    
+
+
 
   const {
     data: users,
@@ -20,11 +33,7 @@ const Users: React.FC = () => {
     refetch,
   } = useQuery({
     queryFn: () => {
-      return getUsers({
-        limit: paginationLimit,
-        name: searchKeyword,
-        offset: currentPage,
-      });
+      return getUsers(searchParams);
     },
     queryKey: ["users", currentPage],
     refetchOnWindowFocus: false,
@@ -83,7 +92,7 @@ const Users: React.FC = () => {
         <Pagination
           onPageChange={(page) => setCurrentPage(page)}
           currentPage={currentPage}
-          totalPageCount={parseInt(users?.count / paginationLimit)}
+          totalPageCount={parseInt(users?.count / limit)}
         />
       )}
     </div>

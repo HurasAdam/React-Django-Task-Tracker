@@ -4,22 +4,15 @@ import * as types from "../types/index"
 
 
 
-export const getAllProjects = async (searchParams?:types.IProjectsSearchParams):Promise<types.IProjectsListResponse> => {
-
+export const getAllProjects = async (searchParams:types.IProjectsSearchParams):Promise<types.IProjectsListResponse> => {
+const {offset,limit,ordering,title}=searchParams;
 
 
 const queryParams = new URLSearchParams();
-
-if(searchParams?.paramsFilter){
-queryParams.append("ordering",searchParams.paramsFilter.ordering||"");
-queryParams.append("limit",searchParams.paramsFilter.limit);
-queryParams.append("offset",searchParams.paramsFilter.offset>0?searchParams.paramsFilter.offset:"");
-}
-if(searchParams?.keywordFilter){
-  queryParams.append("title",searchParams.keywordFilter.title||"");
-}
-
-
+queryParams.append("ordering",ordering ? ordering :"");
+queryParams.append("limit",limit ? limit: "");
+queryParams.append("offset",offset && offset>0?offset:"");
+queryParams.append("title",title ? title :"");
 
   try {
     const config = {

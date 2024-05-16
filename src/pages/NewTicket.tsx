@@ -40,7 +40,7 @@ const NewTicket: React.FC = () => {
     isError,
   } = useQuery({
     queryFn: () => {
-      return getAllProjects();
+      return getAllProjects({limit:100});
     },
     queryKey: ["projects"],
     refetchOnWindowFocus: false,
@@ -73,14 +73,11 @@ const NewTicket: React.FC = () => {
 
 
 
-if(isPriorityOptionListLoading &&isProjectListLoading &&isUserListLoading &&isTypeOptionListLoading){
+if(isProjectListLoading){
  return(
   <NewTicketSkeleton/>
  )
   }
-
-
-
 
   return (
     <div className="common-container h-fit ">
