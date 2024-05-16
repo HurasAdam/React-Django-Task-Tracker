@@ -136,3 +136,22 @@ offset?:string |number;
 title?:string
 
   }
+
+
+  export interface Task {
+    id: number;
+    owner: string;
+    attachments: IAttachment[];
+    created_by: ICreated_By;
+    updated_by: ICreated_By | null;
+    title: string;
+    description: string;
+    priority:enums.Priority;
+    status: enums.Status;
+    type: enums.Type;
+    archive: boolean;
+    created: string;
+    updated: string;
+    project: number;
+    assignees: IAssignee[] | null;
+  }

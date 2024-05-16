@@ -1,38 +1,37 @@
 import React, { useState } from "react";
-import MainLayout from "../components/MainLayout";
 import { useQuery } from "@tanstack/react-query";
-import { getAllProjects } from "../services/projectsApi";
-import ProjectCard from "../components/ProjectCard";
-import ProjectsWrapper from "../components/ProjectsWrapper";
 import { getAllTickets } from "../services/ticketsApi";
 import { Link } from "react-router-dom";
 import Pagination from "../components/Pagination";
-import { BsFillQuestionCircleFill } from "react-icons/bs";
-import { BiErrorAlt } from "react-icons/bi";
-import { MdOutlineWidgets } from "react-icons/md";
 import { IoClose } from "react-icons/io5";
 import { useAccountStore } from "../store";
+import DataGrid from "../components/DataGrid";
 
 const Tickets: React.FC = () => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [searchKeyword, setSearchKeyword] = useState<string>("");
-  const [paginationLimit, setPaginationLimit] = useState(10);
+const [currentPage, setCurrentPage] = useState<number>(1);
+const [searchKeyword, setSearchKeyword] = useState<string>("");
+const [limit, setLimit] = useState<number>(1);
+const [ordering,setOrdering]=useState<string>("");
+const userAccount = useAccountStore((state) => state.account);
 
-  const userAccount = useAccountStore((state) => state.account);
+
+
+const searchParams= {
+  limit:limit.toString(),
+  ordering:ordering.toString(),
+  offset:(currentPage-1)*limit,
+  title:searchKeyword
+    };
 
   const {
     data: tickets,
-    isLoading,
+    isLoading:isTicketListLoading,
     isError,
     isFetching,
     refetch,
   } = useQuery({
     queryFn: () => {
-      return getAllTickets({
-        limit: paginationLimit,
-        title: searchKeyword,
-        offset: currentPage,
-      });
+      return getAllTickets(searchParams);
     },
     queryKey: ["tickets", currentPage],
     refetchOnWindowFocus: false,
@@ -49,7 +48,7 @@ const Tickets: React.FC = () => {
     e: React.ChangeEvent<HTMLInputElement>
   ): void => {
     e.preventDefault();
-    setCurrentPage(0);
+    setCurrentPage(1);
     refetch();
   };
 
@@ -57,6 +56,13 @@ const Tickets: React.FC = () => {
     setSearchKeyword("");
     setCurrentPage(1);
   };
+
+  const gridHeaders = [
+    { key: "title", label: "Title" },
+    { key: "status", label: "Status" },
+    { key: "type", label: "Type" },
+    { key: "created", label: "Created" },
+  ]
 
   return (
     <div className="  common-container">
@@ -104,147 +110,18 @@ const Tickets: React.FC = () => {
           </div>
         </div>
 
-        <div className="px-4  -mx-4 overflow-x-auto sm:-mx-8 sm:px-8">
-          <div className="inline-block min-w-full overflow-hidden rounded-lg shadow">
-            <table className="min-w-full leading-normal">
-              <thead>
-                <tr>
-                  <th
-                    scope="col"
-                    className="px-5 py-3 text-sm font-normal text-left text-gray-800 uppercase bg-white border-b border-gray-200"
-                  >
-                    Title
-                  </th>
-                  <th
-                    scope="col"
-                    className="px-5 py-3 text-sm font-normal text-left text-gray-800 uppercase bg-white border-b border-gray-200"
-                  >
-                    Status
-                  </th>
-                  <th
-                    scope="col"
-                    className="px-5 py-3 text-sm font-normal text-left text-gray-800 uppercase bg-white border-b border-gray-200"
-                  >
-                    Type
-                  </th>
-                  <th
-                    scope="col"
-                    className="px-5 py-3 text-sm font-normal text-left text-gray-800 uppercase bg-white border-b border-gray-200"
-                  >
-                    Created
-                  </th>
-                  <th
-                    scope="col"
-                    className="px-5 py-3 text-sm font-normal text-left text-gray-800 uppercase bg-white border-b border-gray-200"
-                  ></th>
-                </tr>
-              </thead>
-              <tbody>
-                {isLoading  ? (
-                  <tr>
-                    <td className="text-center py-10 w-full" colSpan={5}>
-                      Loading...
-                    </td>
-                  </tr>
-                ) : tickets?.results?.length === 0 ? (
-                  <tr>
-                    <td colSpan={5} className="text-center py-10 w-full">
-                      No posts found
-                    </td>
-                  </tr>
-                ) : (
-                  tickets?.results?.map((ticket) => {
-                    return (
-                      <tr>
-                        <td className="px-5 py-5 text-sm bg-white border-b border-gray-200">
-                          <div className="flex items-center">
-                            <div className="ml-3">
-                              <p className="text-gray-900 whitespace-no-wrap">
-                                {ticket?.title}
-                              </p>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-5 py-5 text-sm bg-white border-b border-gray-200">
-                          <div className="flex flex-col gap-x-1.5 gap-y-1.5 flex-wrap">
-                            <p className="text-gray-900 whitespace-no-wrap text-xs">
-                              {ticket?.status}
-                            </p>
-                          </div>
-                        </td>
-                        <td className="px-5 py-5 text-sm bg-white border-b border-gray-200">
-                          {ticket?.type === "question" && (
-                            <div className="flex items-center gap-x-1 ">
-                              <span className="  rounded-full text-white text-xs font-semibold uppercase bg-zinc-400 px-2 py-1 ">
-                                {ticket?.type}
-                              </span>
-                            </div>
-                          )}
-                          {ticket?.type === "bug" && (
-                            <div className="flex items-center gap-x-1  ">
-                              <span className="  rounded-full text-white text-xs font-semibold uppercase bg-rose-500 px-6 py-1 ">
-                                {ticket?.type}
-                              </span>
-                            </div>
-                          )}
-                          {ticket?.type === "feature" && (
-                            <div className="flex items-center gap-x-1 ">
-                              <span className="  rounded-full text-white text-xs font-semibold uppercase bg-purple-400 px-3 py-1 ">
-                                {ticket?.type}
-                              </span>
-                            </div>
-                          )}
-                          {ticket?.type === "improvement" && (
-                            <div className="flex items-center gap-x-1 ">
-                              <span className="  rounded-full text-white text-xs font-semibold uppercase bg-pink-500 px-2 py-1 ">
-                                {ticket?.type}
-                              </span>
-                            </div>
-                          )}
-                          {ticket?.type === "other" && (
-                            <div className="flex items-center gap-x-1 ">
-                              <span className="  rounded-full text-white text-xs font-semibold uppercase bg-blue-400 px-4 py-1 ">
-                                {ticket?.type}
-                              </span>
-                            </div>
-                          )}
-                        </td>
-                        <td className="px-5 py-5 text-sm bg-white border-b border-gray-200">
-                          <div className="flex gap-x-1.5 gap-y-1.5 flex-wrap">
-                            {new Date(ticket?.created).toLocaleDateString(
-                              "en-US",
-                              {
-                                day: "numeric",
-                                month: "short",
-                                year: "numeric",
-                              }
-                            )}
-                          </div>
-                        </td>
-                        <td className="px-5 py-5 text-sm bg-white border-b border-gray-200 space-x-5">
-                          <Link
-                            to={`/ticket/${ticket.id}`}
-                            className="text-green-600 hover:text-green-900"
-                          >
-                            View
-                          </Link>
-                        </td>
-                      </tr>
-                    );
-                  })
-                )}
-              </tbody>
-            </table>
+     <DataGrid 
+     data={tickets?.results} 
+     headers={gridHeaders}/>
 
-            {!isLoading && (
+{!isTicketListLoading &&(
               <Pagination
                 onPageChange={(page) => setCurrentPage(page)}
                 currentPage={currentPage}
-                totalPageCount={parseInt(tickets?.count / paginationLimit)}
+                totalPageCount={parseInt(tickets?.count / limit)}
               />
             )}
-          </div>
-        </div>
+
       </div>
     </div>
   );

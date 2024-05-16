@@ -2,14 +2,22 @@ import axios from "axios";
 import clientApi from "../axios";
 import * as types from "../types/index";
 
-export const getAllTickets = async ({ limit = 10, title = "", offset = 0 }) => {
+export const getAllTickets = async ({ limit = 10, title = "", offset = 0,ordering }) => {
   try {
     const config = {
       withCredentials: true,
     };
 
+    const queryParams = new URLSearchParams();
+    queryParams.append("ordering",ordering ? ordering :"");
+    queryParams.append("limit",limit ? limit.toString(): "");
+    queryParams.append("offset",offset && offset>0?offset.toString():"");
+    queryParams.append("title",title ? title :"");
+
+
+
     const response = await axios.get(
-      `http://127.0.0.1:8000/task-tracker/v1/task/tasks/?title=${title}&offset=${offset - 1 * limit}&limit=${limit}`,
+      `http://127.0.0.1:8000/task-tracker/v1/task/tasks/?${queryParams}`,
       config
     );
 

@@ -23,7 +23,7 @@ const Projects: React.FC = () => {
 
   const [searchKeyword, setSearchKeyword] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [limit, setLimit] = useState(2);
+  const [limit, setLimit] = useState(1);
   const [ordering,setOrdering]=useState<string>("");
 
 
