@@ -20,7 +20,7 @@ const NewProject: React.FC = () => {
     queryKey: ["tags"],
   });
   const { data: users } = useQuery({
-    queryFn: () => getUsers({ limit: 100 }),
+    queryFn: () => getUsers({ paramsFilter:{limit:100} }),
     queryKey: ["users"],
   });
 

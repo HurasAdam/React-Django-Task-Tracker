@@ -24,17 +24,14 @@ const Projects: React.FC = () => {
   const [searchKeyword, setSearchKeyword] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [limit, setLimit] = useState(2);
-  const [selectedStars, setSelectedStars] = useState<string[]>([]);
   const [ordering,setOrdering]=useState<string>("");
 
 
   const searchParams= {
-paramsFilter:{
-  limit:limit.toString(),
- ordering:ordering.toString(),
-offset:(currentPage-1)*limit
-},
-keywordFilter:{ title:searchKeyword}
+limit:limit.toString(),
+ordering:ordering.toString(),
+offset:(currentPage-1)*limit,
+title:searchKeyword
   };
 
 
@@ -48,7 +45,7 @@ keywordFilter:{ title:searchKeyword}
     queryFn: () => {
       return getAllProjects(searchParams);
     },
-    queryKey: ["projects", searchParams.paramsFilter],
+    queryKey: ["projects", currentPage,ordering],
     refetchOnWindowFocus: false,
   });
 

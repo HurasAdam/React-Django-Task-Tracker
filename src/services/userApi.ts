@@ -130,20 +130,21 @@ export const validateSession = async () => {
   }
 };
 
-export const getUsers = async ({ limit = 10, name = "", offset = 0 }) => {
+export const getUsers = async (searchParams) => {
+
+const {limit,name,offset}=searchParams
+
   try {
     const config = {
       withCredentials: true,
     };
 
   const queryParams = new URLSearchParams();
-  queryParams.append("limit",limit.toString()||"");
-  queryParams.append("name",name || "");
-  queryParams.append("offset",offset.toString()||"");
+  queryParams.append("limit",limit ? limit :"");
+  queryParams.append("name",name ? name : "");
+  queryParams.append("offset",offset ? offset :"");
 
-
-
-    const response = await axios.get(
+  const response = await axios.get(
       `http://127.0.0.1:8000/task-tracker/v1/user/users/?${queryParams}`,
       config
     );
