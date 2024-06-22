@@ -5,16 +5,17 @@ import { FaUserCircle } from "react-icons/fa";
 import { FaMessage } from "react-icons/fa6";
 import { IoIosNotifications } from "react-icons/io";
 import { MdOutlineArrowRight } from "react-icons/md";
-
+import { MdReport } from "react-icons/md";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { useAccountStore } from "../store";
+import ReportBugForm from "../pages/forms/ReportBugForm";
 
-export const Header: React.FC = () => {
+export const Header: React.FC = ({setIsPopupOpen,setPopupContent,closePopupHandler}) => {
   const navigate = useNavigate();
   const csrfToken = useAccountStore((state) => state.csrfToken);
 
-  const { mutate, isLoading } = useMutation({
+  const { mutate } = useMutation({
     mutationFn: ({ csrfToken }) => logout({ csrfToken }),
     onSuccess: (data) => {
       localStorage.removeItem("user");
@@ -51,6 +52,11 @@ export const Header: React.FC = () => {
           </li>
           <li>
             <FaUserCircle className="w-[25px] h-auto text-slate-500 cursor-pointer hover:opacity-70  transition-all " />
+          </li>
+          <li>
+<MdReport 
+onClick={()=>{setIsPopupOpen(prev=>!prev); setPopupContent(<ReportBugForm closePopupHandler={closePopupHandler}/>)}}
+className="w-[25px] h-auto text-slate-500 cursor-pointer hover:opacity-70  transition-all "/>
           </li>
         </ul>
         <button

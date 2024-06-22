@@ -6,6 +6,13 @@ import Pagination from "../components/Pagination";
 import { IoClose } from "react-icons/io5";
 import { useAccountStore } from "../store";
 import DataGrid from "../components/DataGrid";
+import ProjectTitleFilter from "../components/ProjectTitleFilter";
+import StarRatingFilter from "../components/DynamicFilter";
+import DeadlineFilter from "../components/DeadlineFilter";
+import ProjectTypesFilter from "../components/ProjectTypesFilter";
+import * as enums from "../types/enums"
+import DynacimFilter from "../components/DynamicFilter";
+import DynamicFilter from "../components/DynamicFilter";
 
 const Tickets: React.FC = () => {
 const [currentPage, setCurrentPage] = useState<number>(1);
@@ -27,7 +34,7 @@ const searchParams= {
     data: tickets,
     isLoading:isTicketListLoading,
     isError,
-    isFetching,
+    isFetching:isTicketListFetching,
     refetch,
   } = useQuery({
     queryFn: () => {
@@ -64,67 +71,84 @@ const searchParams= {
     { key: "created", label: "Created" },
   ]
 
-  return (
-    <div className="  common-container">
-      <div className="w-full mx-auto  px-10   ">
-        <div className="flex flex-col gap-4  justify-between  lg:pr-6 2xl:pr-12  ">
-          <h1 className="h1-bold text-center sm:text-left sm:h2-bold mt-4">
-            Tickets
-          </h1>
+  return (<div className=" mt-5 flex flex-col pb-20 w-full h-screen  relative custom-scrollbar overflow-scroll  ">
 
-          <div className="flex flex-col sm:flex-row justify-between gap-10 w-full  mb-6 ">
-            {userAccount && userAccount.role === "admin" && (
+  <div className="grid grid-cols-1 lg:grid-cols-[250px_1fr] gap-5 px-14 ">
+    
+        <div className="  flex flex-col gap-y-3 lg:sticky top-4 h-screen ">
+        {userAccount && userAccount.role === "admin" && (
               <Link
                 to={"/ticket/new"}
-                className="border-2 px-2 py-2.5 text-center bg-purple-500 text-white font-semibold rounded-lg hover:opacity-85"
+                className="px-2 py-2.5 text-center bg-blue-500 text-white font-semibold rounded-lg hover:opacity-85"
               >
-                + Add new ticket
+                + Add new Ticket
               </Link>
             )}
-            <div className="flex flex-col sm:flex-row gap-2 relative">
-              <button
-                disabled={searchKeyword.length < 1}
-                onClick={resetSearchFilterHandler}
-                className="absolute top-2 right-[27%] "
-              >
-                <IoClose
-                  className="text-slate-300 cursor-pointer 
-            rounded-full hover:bg-slate-100 hover:text-slate-500  w-7 h-auto transition-all duration-100 "
-                />
-              </button>
-              <input
-                onChange={searchKeywordHandler}
-                className="placeholder:px-2 p-2 w-full rounded-lg mx-auto md:mx-0"
-                placeholder="Ticket title..."
-                type="text"
-                value={searchKeyword}
-              />
-              <button
-                onClick={submitSearchKeywordHandler}
-                className="flex-shrink-0 px-4 py-2 text-base font-semibold text-white bg-purple-600 rounded-lg shadow-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-purple-200"
-                type="submit"
-              >
-                Filter
-              </button>
-            </div>
+       
+       <div className="rounded-lg border border-slate-300 p-5   overflow-x-hidden custom-scrollbar overflow-y-auto">
+         
+          <div className="space-y-5">
+            <h3 className="text-lg font-semibold border-b border-slate-300 pb-5">
+              Filter by:
+            </h3>
+        <ProjectTitleFilter 
+        searchKeyword={searchKeyword}
+        isFetching={isTicketListFetching}
+        searchKeywordHandler={searchKeywordHandler}  
+        submitSearchKeywordHandler={submitSearchKeywordHandler}
+        resetSearchFilterHandler={resetSearchFilterHandler}
+        />
+            <DynamicFilter
+            filterOptions={enums.Type}
+            />
+     <DynamicFilter
+            filterOptions={enums.Status}
+            />
+
+         {/* {  tags&& tags.length>0 && <ProjectTypesFilter
+            tags={tags}
+              // selectedHotelTypes={selectedHotelTypes}
+              // onChange={handleHotelTypeChange}
+            />} */}
+            <DeadlineFilter
+              // selectedPrice={selectedPrice}
+              // onChange={(value?: number) => setSelectedPrice(value)}
+            />
+          </div>
           </div>
         </div>
-
-     <DataGrid 
+        <div className="flex flex-col gap-3">
+          <div className="flex justify-between items-center">
+            <span className="text-xl font-bold">
+              {tickets?.count} Tickets Found
+              {/* {search.destination ? ` in ${search.destination}` : ""} */}
+             
+            </span>
+     {/* <ProjectOrderingFilter
+     ordering={ordering}
+     handleSearchOrdering={handleSearchOrdering}
+     /> */}
+          </div>
+    
+          <DataGrid 
      data={tickets?.results} 
      headers={gridHeaders}/>
 
-{!isTicketListLoading &&(
-              <Pagination
-                onPageChange={(page) => setCurrentPage(page)}
-                currentPage={currentPage}
-                totalPageCount={parseInt(tickets?.count / limit)}
-              />
-            )}
-
+  
+  {!isTicketListLoading &&(
+                <Pagination
+                  onPageChange={(page) => setCurrentPage(page)}
+                  currentPage={currentPage}
+                  totalPageCount={parseInt(tickets?.count / limit)}
+                />
+              )}
+     
+        </div>
       </div>
-    </div>
-  );
+  </div>
+    );
+
+  
 };
 
 export default Tickets;

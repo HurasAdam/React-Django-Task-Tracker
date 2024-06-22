@@ -17,7 +17,6 @@ const OnboardingForm: React.FC = ({ onSave }) => {
       gender: "",
       birthday: "",
       avatar: "",
-      phone: "",
       bio: "",
       theme: "default",
     },
@@ -46,7 +45,18 @@ const OnboardingForm: React.FC = ({ onSave }) => {
 
   const handleSave = handleSubmit((data) => {
     console.log(data);
-    onSave({ csrfToken: csrfToken, formData: data });
+
+const formData = new FormData();
+const photo = data.avatar[0]
+formData.append("gender",data.gender);
+
+if(photo){
+  formData.append("photo",photo);
+}
+
+
+
+    onSave({ csrfToken: csrfToken, formData: formData });
   });
 
   return (
@@ -105,37 +115,12 @@ const OnboardingForm: React.FC = ({ onSave }) => {
         )}
       </div>
 
-      <div className="w-full flex flex-col">
-        <label htmlFor="phone" className="text-slate-500 text-sm ">
-          Phone
-        </label>
-        <input
-          id="phone"
-          {...register("phone", {
-            validate: (value) => {
-              const phoneNumber = Number(value.trim());
-              if (isNaN(phoneNumber)) {
-                return "Invalid number";
-              }
-              if (value.trim().length < 9 || value.trim().length > 12) {
-                return "Phone number should have 9 to 12 digits";
-              }
 
-              return true;
-            },
-          })}
-          type="text"
-          className="py-2"
-        />
-        {errors?.phone && (
-          <span className="text-xs text-rose-500 mt-2">
-            {errors?.phone?.message}
-          </span>
-        )}
-      </div>
       <div className="w-full flex flex-col">
         <label htmlFor="">Profile photo</label>
-        <input type="file" />
+        <input 
+        {...register("avatar")}
+        type="file" />
       </div>
       <div className="w-full flex flex-col">
         <span>Bio</span>

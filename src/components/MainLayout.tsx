@@ -8,6 +8,8 @@ import { useQuery } from "@tanstack/react-query";
 import { useAccountStore } from "../store";
 import { useWindowSize } from "@uidotdev/usehooks";
 import MobileLeftSidebar from "./MobileLeftSidebar";
+import Popup from "./Popup";
+import ReportBugForm from "../pages/forms/ReportBugForm";
 
 const RootLayout: React.FC = () => {
   const setAccount = useAccountStore((state) => state.setAccount);
@@ -44,6 +46,15 @@ const setCsrfToken=useAccountStore((state)=>state.setCsrfToken);
   const windowSize = useWindowSize();
   const [isMenuActive, setIsMenuActive] = useState(true);
   const [isMobileMenuActive, setIsMobileMenuActive] = useState<boolean>(false);
+const [isPopupOpen,setIsPopupOpen]=useState(false);
+const [popupContent, setPopupContent] = useState();
+
+
+
+const closePopupHandler= ()=>{
+  setIsPopupOpen(false);
+  setPopupContent(undefined);
+}
 
   useEffect(() => {
     if (windowSize.width < 1024) {
@@ -58,10 +69,18 @@ const toggleMobileMenuHandler=():void=>{
   setIsMobileMenuActive((state)=>!state);
 }
 
+
+const renderContentComponent=(Component)=>{
+  return <Component/>
+}
+
   return (
     <div className="w-full flex flex-col  h-screen">
       <Header
-     
+     isPopupOpen={isPopupOpen}
+     setIsPopupOpen={setIsPopupOpen}
+     setPopupContent={setPopupContent}
+     closePopupHandler={closePopupHandler}
       />
       <main className=" flex">
         <LeftSideBar isMenuActive={isMenuActive} toggleMobileMenuHandler={toggleMobileMenuHandler} />
@@ -70,6 +89,7 @@ const toggleMobileMenuHandler=():void=>{
           <Outlet />
         </section>
       </main>
+      <Popup isPopupOpen={isPopupOpen} popupContent={popupContent}closePopupHandler={closePopupHandler} />
     </div>
   );
 };

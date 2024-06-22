@@ -4,16 +4,16 @@ import { useQuery } from "@tanstack/react-query";
 import { getAllProjects, getTags } from "../services/projectsApi";
 import ProjectCard from "../components/ProjectCard";
 import { IoClose } from "react-icons/io5";
-import ProjectsWrapper from "../components/ProjectsWrapper";
 import Pagination from "../components/Pagination";
 import { Link } from "react-router-dom";
 import { useAccountStore } from "../store";
 import ProjectTypesFilter from "../components/ProjectTypesFilter";
 import DeadlineFilter from "../components/DeadlineFilter";
-import StarRatingFilter from "../components/StarRatingFilter";
 import ProjectCard2 from "../components/ProjectCard2";
 import ProjectTitleFilter from "../components/ProjectTitleFilter";
 import ProjectOrderingFilter from "../components/ProjectOrderingFilter";
+import DynamicFilter from "../components/DynamicFilter";
+import * as enums from "../types/enums";
 
 
 const Projects: React.FC = () => {
@@ -23,7 +23,7 @@ const Projects: React.FC = () => {
 
   const [searchKeyword, setSearchKeyword] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [limit, setLimit] = useState(1);
+  const [limit, setLimit] = useState(5);
   const [ordering,setOrdering]=useState<string>("");
 
 
@@ -90,9 +90,9 @@ refetch();
 
 
   return (
-<div className=" mt-5 flex flex-col pb-20 w-full pl-12 h-screen  relative custom-scrollbar overflow-scroll  ">
+<div className=" mt-5 flex flex-col pb-20 w-full  h-screen items-center   relative custom-scrollbar overflow-scroll  ">
 
-<div className="grid grid-cols-1 lg:grid-cols-[250px_1fr] gap-5 max-w-[1400px] ">
+<div className="grid grid-cols-1 lg:grid-cols-[250px_1fr] gap-5 w-full px-14 ">
   
       <div className="  flex flex-col gap-y-3 lg:sticky top-4 h-screen ">
       {userAccount && userAccount.role === "admin" && (
@@ -117,9 +117,13 @@ refetch();
       submitSearchKeywordHandler={submitSearchKeywordHandler}
       resetSearchFilterHandler={resetSearchFilterHandler}
       />
-          <StarRatingFilter
+          <DynamicFilter
+          filterOptions={enums.Status}
             // selectedStars={selectedStars}
             // onChange={handleStarsChange}
+          />
+          <DynamicFilter
+          filterOptions={enums.Visibility}
           />
        {  tags&& tags.length>0 && <ProjectTypesFilter
           tags={tags}

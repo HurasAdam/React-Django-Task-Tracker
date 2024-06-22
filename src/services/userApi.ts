@@ -209,3 +209,22 @@ export const confirmOnboardingProcess = async ({ csrfToken, formData }) => {
     }
   }
 };
+
+
+export const reportBug = async({ formData })=>{
+  try{
+const response = await axios.post(
+  "http://localhost:8000/task-tracker/v1/adminx/contact/",formData);
+return response.data;
+
+  }catch(error){
+    console.log(error);
+    if (axios.isAxiosError(error)) {
+      console.log("error message:", error.message);
+      throw new Error(error.message);
+    } else {
+      console.log("undexpected error", error);
+      throw new Error("An unexpected error ocured");
+    }
+  }
+}
