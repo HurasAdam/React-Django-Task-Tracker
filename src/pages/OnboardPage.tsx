@@ -3,12 +3,17 @@ import OnboardingForm from "./forms/OnboardingForm";
 import { images } from "../constants";
 import { useMutation } from "@tanstack/react-query";
 import { confirmOnboardingProcess } from "../services/userApi";
+import { useNavigate } from "react-router-dom";
 
 const OnboardPage: React.FC = () => {
+  const navigate = useNavigate();
   const { mutate } = useMutation({
     mutationFn: ({ csrfToken, formData }) => {
       return confirmOnboardingProcess({ csrfToken, formData });
     },
+    onSuccess:()=>{
+      navigate("/")
+    }
   });
 
   const onSave = ({ csrfToken, formData }) => {
