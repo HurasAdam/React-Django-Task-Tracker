@@ -22,6 +22,7 @@ const ProjectCard2:React.FC<IProps> = ({key, project }) => {
             src={images.ProjectPlaceholderImage}
             className=" hidden  xl:flex lg:w-[300px] h-auto object-cover object-center"
           />
+          
         </div>
 
 
@@ -47,7 +48,7 @@ const ProjectCard2:React.FC<IProps> = ({key, project }) => {
             <div className="line-clamp-4 flex flex justify-between py-1 items-center border-b md:border-none md:flex-col">
                 <span className="text-center font-semibold text-sm">Leader:</span>
           <div className="flex items-center gap-x-2">
-          <img src={project?.owner?.profile?.url} alt="profile picture" className="w-9 h-auto  " />
+          <img src={project?.owner?.profile?.url} alt="profile picture" className="w-11 h-11 rounded-full object-cover   " />
           <span className="text-sm">{project?.owner?.first_name} {project?.owner?.last_name}</span>
      
           </div>
