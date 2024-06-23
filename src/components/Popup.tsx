@@ -17,7 +17,7 @@ const Popup:React.FC<IProps> = ({isPopupOpen,closePopupHandler,popupContent,}) =
 
 <div className='h-screen w-screen fixed top-0 left-0 bg-black/40 z-50 backdrop-blur-sm'>
 
-<div className='fixed top-[28%] left-1/2 rounded-md -translate-x-1/2 p-4 shadow-md bg-white dark:bg-gray-900 rouded-md duration-200 w-[540px] '>
+<div className='fixed top-[28%] left-1/2 rounded-md -translate-x-1/2 p-4 shadow-md bg-white dark:bg-gray-900 rouded-md duration-200 w-[360px]  sm:w-[450px]  md:w-[540px] '>
 
     {/* Header section */}
     <div className='flex items-center justify-end'>

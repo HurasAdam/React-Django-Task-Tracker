@@ -115,6 +115,7 @@ const ProjectDetails: React.FC = () => {
                     <span className="font-semibold">{`${project?.owner?.first_name} ${project?.owner?.last_name}`}</span>
                   </div>
                   <img
+                      className="w-10 h-10 object-cover  rounded-full"
                     src={project?.owner?.profile?.photo || images.ProfileImage}
                     alt=""
                   />
@@ -130,7 +131,8 @@ const ProjectDetails: React.FC = () => {
                     <div className="border-b p-2 flex flex-col items-center   md:flex-row md:justify-evenly text-slate-800 mb-10 md:mb-5">
                       <img
                         src={member?.profile?.photo || images.ProfileImage}
-                        alt=""
+                        alt="avatar"
+                        className="w-10 h-10 object-cover  rounded-full"
                       />
                       <div className="flex flex-1  flex-col items-center">
                         <span className=" flex items-center ml-2 ">
